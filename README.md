@@ -1,0 +1,1 @@
+All CI-CD related contents to be stored and updated for SmartBid Deployment on Jenkins, Docker, Kubernetes and Heroku
