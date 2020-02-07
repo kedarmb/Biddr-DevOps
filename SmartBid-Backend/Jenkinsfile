@@ -1,0 +1,77 @@
+pipeline {
+        
+        agent any
+        
+        parameters {
+                string(defaultValue: "devBuild", description: 'Which branch?', name: 'BRANCH_NAME')
+        }
+
+        environment {
+                CHROME_BIN = '/bin/google-chrome'  
+                registry = "thinkperfect/smartbid_backend"
+                registryCredential = 'admindockerRegistry'
+                dockerImage = ''
+        }
+        
+        stages {
+                
+                
+               stage('Checkout SCM branch devBuild'){
+                        steps{
+                               git branch: 'devBuild', credentialsId: '956f3118-748c-4481-a443-9c2c12556c5e', url: 'https://github.com/thinkperfect/SmartBid-Backend.git'
+                        }
+                
+                }
+        
+               stage('Fetch Dependenices'){
+                        steps{
+                                
+                                sh "yarn"
+                       }    
+                }
+          
+               stage('Build a SmartBid-Backend Docker Image'){
+                 steps{
+                    script {
+                        dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    }
+                 }
+               post {
+                 always {  
+                      emailext attachLog: true, attachmentsPattern: 'generatedFile.txt', body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
+                      compressLog: true, recipientProviders: [brokenBuildSuspects(), culprits(), developers(), requestor(), brokenTestsSuspects()], subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
+                      replyTo: 'devops@thinkperfect.io', to: 'devops@thinkperfect.io, asaha@thinkperfect.io'
+                    }            
+                  }
+                }
+               
+               stage('Push Docker Images to Docker Hub'){
+                  steps{
+                         withDockerRegistry(credentialsId: 'ebd92aa8-fd40-45c0-b185-c8b5d0c78bd6', url: "") {
+                         sh "docker push thinkperfect/smartbid_backend:${env.BUILD_ID}"
+                        }
+                   } 
+                }
+                stage('Remove Unused Docker images'){
+                        steps {
+                              sh "docker image prune -f" 
+                        }
+                }
+                
+               /*stage('Deploy'){
+                      steps {
+
+                        sh "docker-compose up -d --build"
+                        sh "docker run -d -p 3000:3000 --name smartbidapi smartbid-be_node"
+
+                  }
+              }*/
+        }
+  
+  post {
+    always {
+      sh "cd /var/lib/jenkins/workspace"
+      cleanWs()
+    }
+  }
+}
