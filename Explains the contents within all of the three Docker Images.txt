@@ -17,5 +17,5 @@ Backend Docker Image contains
 
 MongoDB Docker Image contains
 =============================
-1. Contains the mongo as the base platoform.
-2. Contains the realtime SmartBid data in the form json.
+1. Contains the mongo as the base platform.
+2. Contains the realtime SmartBid data in the form of json.
