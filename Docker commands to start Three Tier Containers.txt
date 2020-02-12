@@ -1,33 +1,31 @@
 Create Volume for Mongo DB
 ==========================
-1. docker volume create smartbid_mongodb
+1. docker volume create smartbid_mongodb_volume
 
 
 Create Networks for all three applications
 ==========================================
-1. docker network create frontend
-2. docker network create backend
-3. docker network create mongodb
-
-
-Create a docker container for Frontend application and attach the necessary networks
-====================================================================================
-1. docker create -it -p 80:80 --network=frontend --name smartbid_frontend thinkperfect/smartbid_frontend:<tag_version>
-2. docker network connect backend smartbid_frontend
-3. docker start smartbid_frontend
+1. docker network create network-frontend
+2. docker network create network-backend
 
 
 Create a docker container for MongoDB application along with attach the created volume and necessary networks
 =============================================================================================================
-1. docker create -it -p 27017:27017 --network=mongodb --mount 'type=volume,src=smartbid_mongodb,dst=/data/db' --name smartbid_mongodb smartbid_mongodb
+1. docker create -it -p 27017:27017 --network=network-backend --mount 'type=volume,src=smartbid_mongodb_volume,dst=/data/db' --name smartbid_mongodb thinkperfect/smartbid_mongodb
 2. docker start smartbid_mongodb
-
 
 Create a docker container for Backend application along with attach the created volume and necessary network and link the mongodb container which is created earlier
 ====================================================================================================================================================================
-1. docker create -it -p 3000:3000 --network=backend --link mongodb --name smartbid_backend thinkperfect/smartbid_backend:<tag_version>
-2. docker network connect mongodb smartbid_backend
+1. docker create -it -p 3000:3000 --network=network-backend --link mongodb --name smartbid_backend thinkperfect/smartbid_backend:<tag_version>
+2. docker network connect network-frontend smartbid_backend
 3. docker start smartbid_backend
+
+
+Create a docker container for Frontend application along with attach the created volume and necessary network and link the backend container which is created earlier
+=====================================================================================================================================================================
+1. docker create -it -p 80:80 --network=network-frontend --link smartbid_backend --name smartbid_frontend thinkperfect/smartbid_frontend:<tag_version>
+2. docker network connect network-backend smartbid_frontend
+3. docker start smartbid_frontend
 
 
 Check the containers running using below docker command
