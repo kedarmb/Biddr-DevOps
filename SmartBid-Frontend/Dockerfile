@@ -1,6 +1,6 @@
 FROM node:alpine3.11 as node
 
-MAINTAINER kedar <kbelavanaki@thinkperfect.io>
+LABEL author="kbelavanaki@thinkperfect.io"
 
 RUN mkdir -p /usr/src/app
 
