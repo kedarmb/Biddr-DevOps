@@ -1,0 +1,21 @@
+Frontend Docker Image contains
+==============================
+1. Contains the node js as the base platform.
+2. Contains project dependency that is defined in package.json file.
+3. Contains the source code of the project.
+4. Deploy the frontend dist/ folder into nginx server image that is pulled from docker hub.
+
+
+
+Backend Docker Image contains
+=============================
+1. Contains the node js as the base platform.
+2. Contains project dependency that is defined in package.json file.
+3. Contains the source code of the project.
+4. Start the app using yarn command "yarn start" when container is created out of this image.
+
+
+MongoDB Docker Image contains
+=============================
+1. Contains the mongo as the base platform.
+2. Contains the realtime SmartBid data in the form of json.

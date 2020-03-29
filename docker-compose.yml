@@ -1,0 +1,65 @@
+version: "3.7"
+services:
+
+    angular:
+        container_name: smartbid-frontend
+        build: ./workspace/SmartBid-FE
+        volumes: 
+            - smartbid-frontend_volume:/usr/src/app
+        ports:
+            - "4200:80"
+        networks: 
+            - network-frontend
+            - network-backend
+        restart: always
+        
+        # start container once 'node' service is up
+        depends_on:
+            - node
+        
+        # 'angular' and 'node' should be able to communicate
+        links:
+            - node
+
+    node:
+        container_name: smartbid-backend
+        build: ./workspace/SmartBid-BE
+        volumes:
+            - smartbid-backend_volume:/app
+        env_file:
+            - ./workspace/SmartBid-BE/.env
+        environment:
+            - MONGO_URI=mongodb+srv://smartbid:SmartBid1!@cluster0-ofksl.mongodb.net/test?retryWrites=true&w=majority
+            - NODE_ENV=production
+        ports:
+            - "3000:3000"
+        networks: 
+            - network-backend
+            - network-frontend
+        restart: always
+      
+        # start container once 'db' service is up
+        depends_on:
+            - mongodb
+        
+        # 'db' and 'node' should be able to communicate
+        links:
+            - mongodb
+
+    mongodb:
+        container_name: mongodb
+        image: mongo
+        volumes:
+            - mongodb_data_volume:/data/db
+        networks:
+            - network-backend
+        restart: always    
+      
+volumes:
+    mongodb_data_volume:
+    smartbid-frontend_volume:
+    smartbid-backend_volume:
+
+networks: 
+    network-frontend:
+    network-backend:  
