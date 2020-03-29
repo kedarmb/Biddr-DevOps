@@ -1,4 +1,4 @@
-FROM node:10 as node
+FROM node:alpine3.11 as node
 
 MAINTAINER kedar <kbelavanaki@thinkperfect.io>
 

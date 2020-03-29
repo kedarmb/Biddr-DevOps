@@ -11,6 +11,7 @@ services:
         networks: 
             - network-frontend
             - network-backend
+        restart: always
         
         # start container once 'node' service is up
         depends_on:
@@ -30,9 +31,12 @@ services:
         environment:
             - MONGO_URI=mongodb+srv://smartbid:SmartBid1!@cluster0-ofksl.mongodb.net/test?retryWrites=true&w=majority
             - NODE_ENV=production
+        ports:
+            - "3000:3000"
         networks: 
             - network-backend
-            - network-frontend  
+            - network-frontend
+        restart: always
       
         # start container once 'db' service is up
         depends_on:
@@ -49,6 +53,7 @@ services:
             - mongodb_data_volume:/data/db
         networks:
             - network-backend
+        restart: always    
       
 volumes:
     mongodb_data_volume:

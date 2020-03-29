@@ -1,14 +1,15 @@
-FROM node:12
+FROM node:alpine3.11
+
+RUN mkdir /app
+
+WORKDIR /app
+
+COPY package*.json /app/
+
+RUN npm install
+
+COPY . /app
 
 EXPOSE 3000
 
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
-
-RUN mkdir /app
-WORKDIR /app
-COPY package.json yarn.lock /app/
-RUN yarn --pure-lockfile
-COPY . /app
-
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
