@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
   - name: biddr-backend
-    image: kbelavanaki/biddr_backend
+    image: kbelavanaki/smartbid_node:latest
     env:
       - name: NODE_ENV
         value: "production"
