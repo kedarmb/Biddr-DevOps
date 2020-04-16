@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: angular-app-pod
+  labels:
+    name: angular-app-pod
+    app: biddr-app
+spec:
+  containers:
+  - name: biddr-frontend
+    image: kbelavanaki/biddr-frontend
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80

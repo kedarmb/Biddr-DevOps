@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-service
+  labels:
+    name: angular-service
+    app: biddr-app
+spec:
+  selector:
+    name: angular-app-pod
+    app: biddr-app
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80

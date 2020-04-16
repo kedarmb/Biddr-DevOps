@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongo-app-pod
+  labels:
+    name: mongo-app-pod
+    app: biddr-app
+spec:
+  containers:
+  - name: biddr-database
+    image: mongo:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 27017
