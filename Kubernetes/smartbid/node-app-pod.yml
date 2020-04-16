@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: node-app-pod
+  labels:
+    name: node-app-pod
+    app: biddr-app
+spec:
+  containers:
+  - name: biddr-backend
+    image: kbelavanaki/biddr_backend
+    env:
+      - name: NODE_ENV
+        value: "production"
+      - name: MONGO_URI
+        value: "mongodb+srv://smartbid:SmartBid1!@cluster0-ofksl.mongodb.net/test?retryWrites=true&w=majority"
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 3000

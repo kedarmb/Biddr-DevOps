@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+  labels:
+    name: mongo-service
+    app: biddr-app
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: mongo-app-pod
+    app: biddr-app
+      
