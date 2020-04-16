@@ -1,0 +1,61 @@
+version: "3"
+
+services:
+  mongo:
+    image: kbelavanaki/mongo:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==worker1
+    environment: 
+      - MONGO_URI=mongodb+srv://smartbid:SmartBid1!@cluster0-ofksl.mongodb.net/BiddrProd09032020?authSource=admin&replicaSet=Cluster0-shard-0&w=majority&readPreference=primary&appname=MongoDB2020Compass&retryWrites=true&ssl=true
+    networks:
+      - back-tier
+    volumes:
+      - mongo_volume:/data/db
+  
+  node:
+    image: kbelavanaki/smartbid_node:latest
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - node.hostname==worker2
+    environment: 
+      - NODE_ENV=production
+      - MONGO_URI=mongodb+srv://smartbid:SmartBid1!@cluster0-ofksl.mongodb.net/BiddrProd09032020?authSource=admin&replicaSet=Cluster0-shard-0&w=majority&readPreference=primary&appname=MongoDB2020Compass&retryWrites=true&ssl=true
+    networks:
+      - back-tier
+      - front-tier
+    volumes:
+      - node_volume:/app
+    depends_on: 
+      - mongo
+  
+  angular:
+    image: kbelavanaki/smartbid_angular:latest
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - node.hostname==manager1
+    ports:
+      - 4200:80
+    networks: 
+      - front-tier
+      - back-tier
+    volumes: 
+      - angular_volume:/usr/src/app
+    depends_on: 
+      - node
+
+networks:
+  front-tier:
+  back-tier:
+
+volumes:
+  mongo_volume:
+  node_volume:
+  angular_volume:
+
